@@ -1,0 +1,181 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package communication;
+
+import java.awt.Color;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import satellite.ContentPanel;
+import utils.SiteUpdate;
+
+/**
+ *
+ * @author shuai
+ */
+public class CommunicationServer {
+
+    private ContentPanel contentPanel;
+    private int portLogin = 6666;
+    private int portMessage = 6667;
+    private ArrayList<Site> sites;
+    private LoginServer loginServer;
+    private MessageServer messageServer;
+    private SiteUpdate siteUpdate;
+
+    public CommunicationServer(ContentPanel contentPanel) {
+        this.contentPanel = contentPanel;
+        this.sites = new ArrayList<Site>();
+        this.loginServer = new LoginServer(this, portLogin);
+        this.messageServer = new MessageServer(this, portMessage);
+        new Thread(loginServer).start();
+        new Thread(messageServer).start();
+
+        siteUpdate = new SiteUpdate(this);
+        new Timer().schedule(siteUpdate, 0, 1000);
+    }
+
+    public ArrayList<Site> getSites() {
+//        synchronized (sites) {
+            return sites;
+//        }
+    }
+
+    public void removeSite(Site site) {
+//        synchronized (sites) {
+        for (int i = 0; i < sites.size(); i++) {
+            if (sites.get(i).getId().equals(site.getId())) {
+                sites.remove(i);
+                break;
+            }
+        }
+//        }
+    }
+
+    public void setSiteColor(Site s, Color c) {
+        String id = s.getId();
+        contentPanel.getSiteLabels()[Integer.parseInt(id) - 1].setBackground(c);
+    }
+
+    public void addSiteCheckBox(Site s) {
+        String id = s.getId();
+        JCheckBox jcb = new JCheckBox("站点" + id);
+        contentPanel.getSiteCheckBoxs().add(jcb);
+        contentPanel.getSiteConnectedPanel().add(jcb);
+        contentPanel.getSiteConnectedPanel().validate();
+    }
+
+    public void removeSiteCheckBox(Site s) {
+        String id = s.getId();
+        ArrayList<JCheckBox> checkBoxes = contentPanel.getSiteCheckBoxs();
+        int siteIndex = findSiteCheckBox(s);
+
+        if (siteIndex != -1) {
+            contentPanel.getSiteConnectedPanel().remove(checkBoxes.get(siteIndex));
+            contentPanel.repaint();
+//            contentPanel.getSiteConnectedPanel().revalidate();
+
+            checkBoxes.remove(siteIndex);
+//            JOptionPane.showConfirmDialog(contentPanel, "站点(" + id + ")掉线");
+//            JOptionPane.showConfirmDialog(contentPanel, "站点(" + id + ")掉线", null, JOptionPane.YES_OPTION, JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(contentPanel, "站点(" + id + ")掉线", "掉线通知", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private Site findSite(String id) {
+        for (Site site : sites) {
+            if (site.getId().equals(id)) {
+                return site;
+            }
+        }
+        return null;
+    }
+
+    private int findSiteCheckBox(Site s) {
+        String id = s.getId();
+        System.out.println("id: " + id);
+        ArrayList<JCheckBox> checkBoxes = contentPanel.getSiteCheckBoxs();
+        for (int i = 0; i < checkBoxes.size(); ++i) {
+            if (checkBoxes.get(i).getText().equals("站点" + id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private JCheckBox findSiteCheckBox(String id) {
+        for (JCheckBox cb : contentPanel.getSiteCheckBoxs()) {
+            if (cb.getText().equals("站点" + id)) {
+                return cb;
+            }
+        }
+        return null;
+    }
+
+    public void parseLoginData(String data, InetAddress addr, int port) {
+        int indexOfColon = data.indexOf(":");
+        String command = data.substring(0, indexOfColon);
+        String id = data.substring(indexOfColon + 1);
+//        System.out.println("ID:" + id);
+        Site site = findSite(id);
+        if (command.equals("connect")) {
+            if (site == null) {
+                Site s = new Site(id, addr, port);
+                sites.add(s);
+                setSiteColor(s, Color.green);
+                addSiteCheckBox(s);
+            } else {
+                site.setLastTime(new Date().getTime());
+            }
+        } else if (command.equals("keep")) {
+            if (site != null) {
+                site.setLastTime(new Date().getTime());
+            } else {
+                Site s = new Site(id, addr, port);
+                sites.add(s);
+                setSiteColor(s, Color.green);
+                addSiteCheckBox(s);
+            }
+        }
+    }
+
+    public void parseMessageData(String data, InetAddress addr, int port) {
+        int indexOfColon = data.indexOf(":");
+        String command = data.substring(0, indexOfColon);
+        String str = data.substring(indexOfColon + 1);
+
+        indexOfColon = str.indexOf(":");
+        String id = str.substring(0, indexOfColon);
+
+        if (command.equals("message")) {
+            String message = str.substring(indexOfColon + 1);
+            contentPanel.getMessageRecordTextArea().append("站点[" + id + "]: " + message + "\n");
+        } else if (command.equals("request")) {
+            String request = str.substring(indexOfColon + 1);
+        }
+    }
+
+    public void sendMessage(String message) {
+        Pattern p = Pattern.compile("[^0-9]");
+        Matcher m;
+        Site site;
+
+        for (JCheckBox cb : contentPanel.getSiteCheckBoxs()) {
+            if (cb.isSelected()) {
+                String str = cb.getText();
+                m = p.matcher(str);
+                String id = m.replaceAll("");
+                site = findSite(id);
+                System.out.println(site.toString());
+                messageServer.sendMessage(site.getAddr(), site.getPort(), message);
+            }
+        }
+    }
+}

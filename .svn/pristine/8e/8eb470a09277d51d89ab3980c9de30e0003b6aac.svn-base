@@ -1,0 +1,71 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package utils;
+
+import communication.CommunicationServer;
+import java.util.ArrayList;
+import javax.swing.table.AbstractTableModel;
+
+/**
+ *
+ * @author shuai
+ */
+public class BusinessRunningTableModel extends AbstractTableModel {
+
+    private ArrayList<Object[]> data;
+    private String[] columnNames = {"序号", "主叫站号", "被叫站号", "申请业务状态", "主叫优先级", "所需信道资源", "业务效率", "警告", "强制拆链"};
+
+    private void loadTestData() {
+        data.add(new Object[]{"1", "1", "2", "s", "d", "f", "5", "警告", "强制拆链"});
+        data.add(new Object[]{"1", "1", "2", "s", "d", "f", "5", "警告", "强制拆链"});
+        data.add(new Object[]{"1", "1", "2", "s", "d", "f", "5", "警告", "强制拆链"});
+        data.add(new Object[]{"1", "1", "2", "s", "d", "f", "5", "警告", "强制拆链"});
+    }
+
+    public BusinessRunningTableModel() {
+        data = new ArrayList<Object[]>();
+        loadTestData();
+    }
+
+    @Override
+    public int getRowCount() {
+        return data.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return data.get(rowIndex)[columnIndex];
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        return columnNames[columnIndex];
+    }
+
+    @Override
+    public Class getColumnClass(int coulmnIndex) {
+        return getValueAt(0, coulmnIndex).getClass();
+    }
+
+    @Override
+    public void setValueAt(Object value, int rowIndex, int columnIndex) {
+        data.get(rowIndex)[columnIndex] = value;
+        fireTableDataChanged();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        if (columnIndex < columnNames.length - 2) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+}

@@ -1,0 +1,91 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package communication;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author shuai
+ */
+public class LoginServer implements Runnable {
+
+    private CommunicationServer communicationServer;
+    private int port;
+    private DatagramSocket serverSocket = null;
+    private DatagramSocket clientSocket = null;
+    private DatagramPacket recvPacket = null;
+    private byte[] recvBuffer = null;
+    private int bufferSize = 1024;
+
+    public LoginServer(CommunicationServer communicationServer, int port) {
+        this.communicationServer = communicationServer;
+        this.port = port;
+        try {
+            serverSocket = new DatagramSocket(port);
+        } catch (SocketException ex) {
+            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        recvBuffer = new byte[bufferSize];
+        recvPacket = new DatagramPacket(recvBuffer, bufferSize);
+    }
+
+    public void run() {
+        try {
+            serverSocket.receive(recvPacket);
+            InetAddress addr = recvPacket.getAddress();
+            int port = recvPacket.getPort();
+            String data = new String(recvBuffer, 0, recvPacket.getLength(), Charset.forName("utf-8"));
+            communicationServer.parseLoginData(data, addr, port);
+        } catch (IOException ex) {
+            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+
+//    @Override
+//    public void run() {
+//        try {
+//            serverSocket = new ServerSocket(port);
+//        } catch (IOException ex) {
+//            System.out.println("create server socket failed!");
+//            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        try {
+//            while (true) {
+//                socket = serverSocket.accept();
+//                System.out.println("site connected");
+//                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                String line = in.readLine();
+//                InetAddress addr = socket.getInetAddress();
+//                int portClient = socket.getPort();
+//                communicationServer.parseLoginData(line, addr, portClient);
+//            }
+//        } catch (IOException ex) {
+//            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+    public void loginConfirm(InetAddress addr, int port) {
+        byte[] data = "login".getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(data, data.length, addr, port);
+        try {
+            serverSocket.send(sendPacket);
+        } catch (IOException ex) {
+            Logger.getLogger(MessageServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}
