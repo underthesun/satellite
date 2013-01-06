@@ -64,7 +64,7 @@ public class CommunicationServer {
 
     public void setSiteColor(Site s, Color c) {
         String id = s.getId();
-        contentPanel.getSiteLabels()[Integer.parseInt(id) - 1].setBackground(c);
+        contentPanel.getSiteLabels().get(Integer.parseInt(id) - 1).setBackground(c);
     }
 
     public void addSiteCheckBox(Site s) {

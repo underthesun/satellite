@@ -5,16 +5,20 @@
 package satellite;
 
 import communication.CommunicationServer;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import utils.BusinessApplyTableModel;
 import utils.BusinessRunningTableModel;
 import utils.ButtonEditor;
 import utils.ButtonRenderer;
+import utils.Configuarator;
 
 /**
  *
@@ -22,9 +26,10 @@ import utils.ButtonRenderer;
  */
 public class ContentPanel extends javax.swing.JPanel {
 
+    private Configuarator conf;
     private BusinessApplyTableModel businessApplyTM;
     private BusinessRunningTableModel businessRunningTM;
-    private JLabel[] siteLabels;
+    private ArrayList<JLabel> siteLabels;
     private ArrayList<JCheckBox> siteCheckBoxes;
     private CommunicationServer communicationServer;
 
@@ -33,10 +38,7 @@ public class ContentPanel extends javax.swing.JPanel {
      */
     public ContentPanel() {
         initComponents();
-        siteLabels = new JLabel[]{
-            this.lbSite1, this.lbSite2, this.lbSite3, this.lbSite4, this.lbSite5, this.lbSite6,
-            this.lbSite7, this.lbSite8, this.lbSite9, this.lbSite10, this.lbSite1, this.lbSite12
-        };
+        siteLabels = new ArrayList<JLabel>();
         siteCheckBoxes = new ArrayList<JCheckBox>();
 
         communicationServer = new CommunicationServer(this);
@@ -55,6 +57,28 @@ public class ContentPanel extends javax.swing.JPanel {
         tbBusinessRunning.getColumnModel().getColumn(8).setCellEditor(new ButtonEditor(this, communicationServer));
         tbBusinessRunning.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
 
+
+        conf = new Configuarator();
+        addLabels();
+    }
+
+    private void addLabels() {
+        int siteNum = Integer.parseInt(conf.getSiteNum());
+        for (int i = 0; i < siteNum; i++) {
+            JLabel lb = new JLabel(""+(i+1));
+            lb.setHorizontalAlignment(SwingConstants.CENTER);
+            lb.setBackground(Color.red);
+            lb.setOpaque(true);
+            lb.setPreferredSize(new Dimension(30, 30));
+            siteLabels.add(lb);
+            plSites.add(lb);
+        }
+//        lbSite5.setBackground(new java.awt.Color(255, 0, 0));
+//        lbSite5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+//        lbSite5.setText("5");
+//        lbSite5.setOpaque(true);
+//        lbSite5.setPreferredSize(new java.awt.Dimension(30, 30));
+//        plSites.add(lbSite5);
     }
 
     /**
@@ -67,18 +91,6 @@ public class ContentPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         plSites = new javax.swing.JPanel();
-        lbSite1 = new javax.swing.JLabel();
-        lbSite2 = new javax.swing.JLabel();
-        lbSite3 = new javax.swing.JLabel();
-        lbSite4 = new javax.swing.JLabel();
-        lbSite5 = new javax.swing.JLabel();
-        lbSite6 = new javax.swing.JLabel();
-        lbSite7 = new javax.swing.JLabel();
-        lbSite8 = new javax.swing.JLabel();
-        lbSite9 = new javax.swing.JLabel();
-        lbSite10 = new javax.swing.JLabel();
-        lbSite11 = new javax.swing.JLabel();
-        lbSite12 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -103,91 +115,6 @@ public class ContentPanel extends javax.swing.JPanel {
         plSites.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "各站点连接情况", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
         plSites.setPreferredSize(new java.awt.Dimension(250, 100));
         plSites.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 30, 50));
-
-        lbSite1.setBackground(java.awt.Color.red);
-        lbSite1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite1.setText("1");
-        lbSite1.setOpaque(true);
-        lbSite1.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite1);
-
-        lbSite2.setBackground(java.awt.Color.red);
-        lbSite2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite2.setText("2");
-        lbSite2.setOpaque(true);
-        lbSite2.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite2);
-
-        lbSite3.setBackground(java.awt.Color.red);
-        lbSite3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite3.setText("3");
-        lbSite3.setOpaque(true);
-        lbSite3.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite3);
-
-        lbSite4.setBackground(java.awt.Color.red);
-        lbSite4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite4.setText("4");
-        lbSite4.setOpaque(true);
-        lbSite4.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite4);
-
-        lbSite5.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite5.setText("5");
-        lbSite5.setOpaque(true);
-        lbSite5.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite5);
-
-        lbSite6.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite6.setText("6");
-        lbSite6.setOpaque(true);
-        lbSite6.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite6);
-
-        lbSite7.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite7.setText("7");
-        lbSite7.setOpaque(true);
-        lbSite7.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite7);
-
-        lbSite8.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite8.setText("8");
-        lbSite8.setOpaque(true);
-        lbSite8.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite8);
-
-        lbSite9.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite9.setText("9");
-        lbSite9.setOpaque(true);
-        lbSite9.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite9);
-
-        lbSite10.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite10.setText("10");
-        lbSite10.setOpaque(true);
-        lbSite10.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite10);
-
-        lbSite11.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite11.setText("11");
-        lbSite11.setOpaque(true);
-        lbSite11.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite11);
-
-        lbSite12.setBackground(new java.awt.Color(255, 0, 0));
-        lbSite12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSite12.setText("12");
-        lbSite12.setOpaque(true);
-        lbSite12.setPreferredSize(new java.awt.Dimension(30, 30));
-        plSites.add(lbSite12);
-
         add(plSites, java.awt.BorderLayout.LINE_START);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "与各站点通信", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -315,18 +242,6 @@ public class ContentPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JLabel lbSite1;
-    private javax.swing.JLabel lbSite10;
-    private javax.swing.JLabel lbSite11;
-    private javax.swing.JLabel lbSite12;
-    private javax.swing.JLabel lbSite2;
-    private javax.swing.JLabel lbSite3;
-    private javax.swing.JLabel lbSite4;
-    private javax.swing.JLabel lbSite5;
-    private javax.swing.JLabel lbSite6;
-    private javax.swing.JLabel lbSite7;
-    private javax.swing.JLabel lbSite8;
-    private javax.swing.JLabel lbSite9;
     private javax.swing.JPanel plSites;
     private javax.swing.JPanel plSitesConnected;
     private javax.swing.JTextArea taMessageRecorded;
@@ -335,7 +250,7 @@ public class ContentPanel extends javax.swing.JPanel {
     private javax.swing.JTable tbBusinessRunning;
     // End of variables declaration//GEN-END:variables
 
-    public JLabel[] getSiteLabels() {
+    public ArrayList<JLabel> getSiteLabels() {
         return this.siteLabels;
     }
 

@@ -4,19 +4,18 @@
  */
 package satellite;
 
-import java.awt.Toolkit;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import utils.Configuarator;
 
 /**
  *
  * @author shuai
  */
 public class MainFrame extends javax.swing.JFrame {
-
     /**
      * Creates new form MainFrame
      */
@@ -35,6 +34,8 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+
+    
     private String getAddr() {
         try {
             return InetAddress.getLocalHost().getHostAddress().toString();
