@@ -5,15 +5,21 @@
 package communication;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import satellite.ContentPanel;
+import utils.Constants;
 import utils.Site;
 import utils.SiteUpdate;
 
@@ -23,34 +29,56 @@ import utils.SiteUpdate;
  *
  * @author shuai
  */
-public class CommunicationServer{
+public class CommunicationServer {
 
     private ContentPanel contentPanel;
-    private int port;
-    private int portLogin;
-    private int portMessage;
+//    private int portLogin;
+//    private int portMessage;
     private ArrayList<Site> sites;
-    private LoginServer loginServer;
-    private MessageServer messageServer;
+//    private LoginServer loginServer;
+//    private MessageServerBack messageServer;
     private SiteUpdate siteUpdate;
+    private int localPort;
+    private int remotePort;
+    private int bizBoardPort;
+    private String remoteIP;
+    private String bizBoardIP;
+    private DatagramSocket socket = null;
+    private Constants constants;
+    private MessageServer messageServer;
 
     public CommunicationServer(ContentPanel contentPanel) {
         this.contentPanel = contentPanel;
-
+        loadConstants();
         this.sites = new ArrayList<Site>();
-        portLogin = contentPanel.getConstants().getLoginPort();
-        portMessage = contentPanel.getConstants().getMessagePort();
-        this.loginServer = new LoginServer(this, portLogin);
-        this.messageServer = new MessageServer(this, portMessage);
-        new Thread(loginServer).start();
+//        portLogin = contentPanel.getConstants().getLoginPort();
+//        portMessage = contentPanel.getConstants().getMessagePort();
+//        this.loginServer = new LoginServer(this, portLogin);
+//        this.messageServer = new MessageServerBack(this, portMessage);
+
+//        new Thread(loginServer).start();
+//        new Thread(messageServer).start();
+
+        this.siteUpdate = new SiteUpdate(this);
+        new Timer().schedule(siteUpdate, 0, 1000);
+        try {
+            socket = new DatagramSocket(localPort);
+        } catch (SocketException ex) {
+            Logger.getLogger(CommunicationServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        this.messageServer = new MessageServer(socket, this);
         new Thread(messageServer).start();
 
-        siteUpdate = new SiteUpdate(this);
-        new Timer().schedule(siteUpdate, 0, 1000);
     }
-    
-    private void loadConstants(){
-        
+
+    private void loadConstants() {
+        constants = contentPanel.getConstants();
+        localPort = constants.getLocalPort();
+        remotePort = constants.getRemotePort();
+        remoteIP = constants.getRemoteIP();
+        bizBoardIP = constants.getBizBoardIP();
+        bizBoardPort = constants.getBizBoardPort();
     }
 
     public JPanel getContentPanel() {
@@ -130,6 +158,16 @@ public class CommunicationServer{
         return null;
     }
 
+    public void parseMessage(String data, InetAddress addr, int port) {
+        int indexOfColon = data.indexOf(":");
+        String command = data.substring(0, indexOfColon);
+        if (command.equals("connect") || command.equals("keep")) {
+            parseLoginData(data, addr, port);
+        } else if (command.equals("message") || command.equals("request") || command.equals("snr")) {
+            parseMessageData(data, addr, port);
+        }
+    }
+
     public void parseLoginData(String data, InetAddress addr, int port) {
         int indexOfColon = data.indexOf(":");
         String command = data.substring(0, indexOfColon);
@@ -146,7 +184,7 @@ public class CommunicationServer{
             } else {
                 site.setLastTime(new Date().getTime());
             }
-            loginServer.loginConfirm(addr, port);
+            loginConfirm(addr, port);
         } else if (command.equals("keep")) {
             String str = data.substring(indexOfColon + 1);
             String[] ss = str.split(":");
@@ -162,7 +200,7 @@ public class CommunicationServer{
                 setSiteColor(s, Color.green);
                 addSiteCheckBox(s);
             }
-            loginServer.keepConfirm(addr, port, count);
+            keepConfirm(addr, port, count);
         }
     }
 
@@ -178,11 +216,41 @@ public class CommunicationServer{
             String message = str.substring(indexOfColon + 1);
             contentPanel.getMessageRecordTextArea().append("[站点" + id + "]: " + message + "\n");
         } else if (command.equals("request")) {
+            System.out.println("request:"+data);
             String[] items = str.split(":");
             contentPanel.getApplyModel().addRecord(items);
-        }else if(command.equals("snr")){
+        } else if (command.equals("snr")) {
             //信噪比
         }
+    }
+
+    public void loginConfirm(InetAddress addr, int port) {
+        String confirmMessage = "connect:ok";
+        messageServer.sendMessage(addr, port, confirmMessage);
+//        sendBuffer = confirmMessage.getBytes();
+//        try {
+//            sendPacket.setAddress(addr);
+//            sendPacket.setPort(port);
+//            sendPacket.setData(sendBuffer, 0, sendBuffer.length);
+//            clientSocket.send(sendPacket);
+//        } catch (IOException ex) {
+//            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+    }
+
+    public void keepConfirm(InetAddress addr, int port, String count) {
+        int c = Integer.parseInt(count) + 1;
+        String confirmMessage = "keep:" + c;
+        messageServer.sendMessage(addr, port, confirmMessage);
+//        sendBuffer = confirmMessage.getBytes();
+//        try {
+//            sendPacket.setAddress(addr);
+//            sendPacket.setPort(port);
+//            sendPacket.setData(sendBuffer, 0, sendBuffer.length);
+//            clientSocket.send(sendPacket);
+//        } catch (IOException ex) {
+//            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void sendMessage(String message) {

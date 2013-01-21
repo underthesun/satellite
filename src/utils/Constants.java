@@ -19,6 +19,8 @@ public class Constants {
     private int bizBoardPort;
     private String remoteIP;
     private int remotePort;
+    
+    private int localPort;
 
     public int getSiteNum() {
         return siteNum;
@@ -48,6 +50,14 @@ public class Constants {
 
     public int getMessagePort() {
         return messagePort;
+    }
+
+    public int getLocalPort() {
+        return localPort;
+    }
+
+    public void setLocalPort(int port) {
+        this.localPort = port;
     }
 
     public void setMessagePort(int messagePort) {

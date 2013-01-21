@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,45 +17,45 @@ import java.util.logging.Logger;
  */
 public class MessageServer implements Runnable {
 
-    private CommunicationServer communicationServer;
-    private int serverPort;
-    private DatagramSocket serverSocket = null;
-    private DatagramPacket recvPacket = null;
-    private byte[] recvBuffer = null;
-    private int bufferSize = 1024;
+    DatagramSocket serverSocket = null;
+    DatagramSocket clientSocket = null;
+    DatagramPacket sendPacket = null;
+    DatagramPacket recvPacket = null;
+    byte[] sendBuffer = null;
+    byte[] recvBuffer = null;
+    CommunicationServer comm;
+    int bufLength = 1024;
 
-    public MessageServer(CommunicationServer communicationServer, int port) {
-        this.communicationServer = communicationServer;
-        this.serverPort = port;
-        try {
-            this.serverSocket = new DatagramSocket(serverPort);
-        } catch (SocketException ex) {
-            Logger.getLogger(MessageServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        recvBuffer = new byte[bufferSize];
-        recvPacket = new DatagramPacket(recvBuffer, bufferSize);
+    public MessageServer(DatagramSocket socket, CommunicationServer c) {
+        this.serverSocket = socket;
+        this.comm = c;
+
+        sendBuffer = new byte[bufLength];
+        recvBuffer = new byte[bufLength];
+        recvPacket = new DatagramPacket(recvBuffer, bufLength);
+        sendPacket = new DatagramPacket(sendBuffer, bufLength);
     }
 
     public void sendMessage(InetAddress addr, int port, String message) {
         byte[] data = message.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(data, data.length, addr, port);
+        sendPacket = new DatagramPacket(data, data.length, addr, port);
         try {
             serverSocket.send(sendPacket);
         } catch (IOException ex) {
-            Logger.getLogger(MessageServer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MessageServerBack.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    @Override
     public void run() {
         while (true) {
             try {
                 serverSocket.receive(recvPacket);
+                String data = new String(recvBuffer, 0, recvPacket.getLength());
+                System.out.println("Received: "+data);
+//                comm.parseMessage(data);
                 InetAddress addr = recvPacket.getAddress();
                 int port = recvPacket.getPort();
-                String data = new String(recvBuffer, 0, recvPacket.getLength());
-//                System.out.println("received: "+data);
-                communicationServer.parseMessageData(data, addr, port);
+                comm.parseMessage(data, addr, port);
             } catch (IOException ex) {
                 Logger.getLogger(MessageServer.class.getName()).log(Level.SEVERE, null, ex);
             }

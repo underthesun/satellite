@@ -67,15 +67,15 @@ public class Configuarator {
 
     }
 
-    public String getLoginPort() {
-        NodeList nl = doc.getElementsByTagName("loginPort");
-        return nl.item(0).getFirstChild().getNodeValue();
-    }
+//    public String getLoginPort() {
+//        NodeList nl = doc.getElementsByTagName("loginPort");
+//        return nl.item(0).getFirstChild().getNodeValue();
+//    }
 
-    public String getMessagePort() {
-        NodeList nl = doc.getElementsByTagName("messagePort");
-        return nl.item(0).getFirstChild().getNodeValue();
-    }
+//    public String getMessagePort() {
+//        NodeList nl = doc.getElementsByTagName("messagePort");
+//        return nl.item(0).getFirstChild().getNodeValue();
+//    }
 
     public String getBusinessBoardIP() {
         NodeList nl = doc.getElementsByTagName("businessBoardIP");
@@ -86,14 +86,19 @@ public class Configuarator {
         NodeList nl = doc.getElementsByTagName("businessBoardPort");
         return nl.item(0).getFirstChild().getNodeValue();
     }
-        
-    public String getRemoteIP(){
+
+    public String getRemoteIP() {
         NodeList nl = doc.getElementsByTagName("remoteIP");
         return nl.item(0).getFirstChild().getNodeValue();
     }
-    
-    public String getRemotePort(){
+
+    public String getRemotePort() {
         NodeList nl = doc.getElementsByTagName("remotePort");
+        return nl.item(0).getFirstChild().getNodeValue();
+    }
+
+    public String getLocalPort() {
+        NodeList nl = doc.getElementsByTagName("localPort");
         return nl.item(0).getFirstChild().getNodeValue();
     }
 //    public static void main(String[] args) {

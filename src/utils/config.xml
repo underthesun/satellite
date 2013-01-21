@@ -48,9 +48,8 @@
     <site>
         <name>12</name>
         <p>12</p>
-    </site>       
-    <loginPort>6666</loginPort>
-    <messagePort>6667</messagePort>
+    </site>      
+    <localPort>6666</localPort> 
     <businessBoardIP>127.0.0.01</businessBoardIP><!--业务板卡IP-->
     <businessBoardPort>7777</businessBoardPort><!--业务板卡端口-->
     <remoteIP>127.0.0.1</remoteIP><!--远端IP-->

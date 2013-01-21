@@ -68,13 +68,14 @@ public class ContentPanel extends javax.swing.JPanel {
         conf = new Configuarator();
         constant = new Constants();
         constant.setSiteNum(Integer.parseInt(conf.getSiteNum()));
-        constant.setLoginPort(Integer.parseInt(conf.getLoginPort()));
-        constant.setMessagePort(Integer.parseInt(conf.getMessagePort()));
+//        constant.setLoginPort(Integer.parseInt(conf.getLoginPort()));
+//        constant.setMessagePort(Integer.parseInt(conf.getMessagePort()));
         constant.setPrivileges(conf.getPrivileges());
         constant.setBizBoardPort(Integer.parseInt(conf.getBusinessBoardPort()));
         constant.setBizBoardIP(conf.getBusinessBoardIP());
         constant.setRemoteIP(conf.getRemoteIP());
         constant.setRemotePort(Integer.parseInt(conf.getRemotePort()));
+        constant.setLocalPort(Integer.parseInt(conf.getLocalPort()));
     }
 
     private void addLabels() {
