@@ -9,8 +9,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +55,7 @@ public class MessageServer implements Runnable {
                 InetAddress addr = recvPacket.getAddress();
                 int port = recvPacket.getPort();
                 String data = new String(recvBuffer, 0, recvPacket.getLength());
-                System.out.println("received: "+data);
+//                System.out.println("received: "+data);
                 communicationServer.parseMessageData(data, addr, port);
             } catch (IOException ex) {
                 Logger.getLogger(MessageServer.class.getName()).log(Level.SEVERE, null, ex);

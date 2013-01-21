@@ -62,20 +62,40 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor,
         int rowIndex;
         if (state != null) {
             if (state.toString().equals(state_permit)) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null, "确定允许?", "确认", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {
-                    rowIndex = contentPanel.getTableApply().getSelectedRow();
-                    if (rowIndex != -1) {
-                        communicationServer.sendBusinessMessage(rowIndex, 0);
-                        Object[] obs = contentPanel.getApplyModel().getRecord(rowIndex);
-                        contentPanel.getApplyModel().removeRecord(rowIndex);
-                        contentPanel.getRunningModel().addRecord(obs);
+//                if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null, "确定允许?", "确认", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {
+//                    rowIndex = contentPanel.getTableApply().getSelectedRow();
+//                    if (rowIndex != -1) {
+//                        communicationServer.sendBusinessMessage(rowIndex, 0);
+//                        Object[] obs = contentPanel.getApplyModel().getRecord(rowIndex);
+//                        contentPanel.getApplyModel().removeRecord(rowIndex);
+//                        contentPanel.getRunningModel().addRecord(obs);
+//                    }
+//                }
+                try {
+                    Object input = JOptionPane.showInputDialog(contentPanel, "输入频点", "批准", JOptionPane.QUESTION_MESSAGE);
+                    if (input == null) {//Canceled
+                        System.out.println("Fucking canceled");
                     }
+                    if (input.toString().equals("")) {
+//                    System.out.println("NULL: Fuck");
+                        JOptionPane.showConfirmDialog(contentPanel, "请正确输入频点", "提醒", JOptionPane.OK_CANCEL_OPTION);
+                    } else {
+//                    System.out.println("input: "+input);
+                        rowIndex = contentPanel.getTableApply().getSelectedRow();
+                        if (rowIndex != -1) {
+                            communicationServer.sendBusinessMessage(rowIndex, 0, input.toString());
+                            Object[] obs = contentPanel.getApplyModel().getRecord(rowIndex);
+                            contentPanel.getApplyModel().removeRecord(rowIndex);
+                            contentPanel.getRunningModel().addRecord(obs);
+                        }
+                    }
+                } catch (Exception ee) {
                 }
             } else if (state.toString().equals(state_reject)) {
                 if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null, "确定拒绝?", "确认", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {
                     rowIndex = contentPanel.getTableApply().getSelectedRow();
                     if (rowIndex != -1) {
-                        communicationServer.sendBusinessMessage(rowIndex, 1);
+                        communicationServer.sendBusinessMessage(rowIndex, 1, "");
                         contentPanel.getApplyModel().removeRecord(rowIndex);
                     }
                 }
@@ -83,14 +103,14 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor,
                 if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null, "确定警告?", "确认", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {
                     rowIndex = contentPanel.getTableRunning().getSelectedRow();
                     if (rowIndex != -1) {
-                        communicationServer.sendBusinessMessage(rowIndex, 2);
+                        communicationServer.sendBusinessMessage(rowIndex, 2, "");
                     }
                 }
             } else if (state.toString().equals(state_force)) {
                 if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null, "确定强制拆链?", "确认", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {
                     rowIndex = contentPanel.getTableRunning().getSelectedRow();
                     if (rowIndex != -1) {
-                        communicationServer.sendBusinessMessage(rowIndex, 3);
+                        communicationServer.sendBusinessMessage(rowIndex, 3, "");
                         contentPanel.getRunningModel().removeRecord(rowIndex);
                     }
                 }

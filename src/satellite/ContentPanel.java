@@ -19,6 +19,7 @@ import utils.BusinessRunningTableModel;
 import utils.ButtonEditor;
 import utils.ButtonRenderer;
 import utils.Configuarator;
+import utils.Constants;
 
 /**
  *
@@ -27,6 +28,7 @@ import utils.Configuarator;
 public class ContentPanel extends javax.swing.JPanel {
 
     private Configuarator conf;
+    private Constants constant;
     private BusinessApplyTableModel businessApplyTM;
     private BusinessRunningTableModel businessRunningTM;
     private ArrayList<JLabel> siteLabels;
@@ -38,34 +40,47 @@ public class ContentPanel extends javax.swing.JPanel {
      */
     public ContentPanel() {
         initComponents();
+        loadConf();
+
         siteLabels = new ArrayList<JLabel>();
         siteCheckBoxes = new ArrayList<JCheckBox>();
 
         communicationServer = new CommunicationServer(this);
 
-        businessApplyTM = new BusinessApplyTableModel();
+        businessApplyTM = new BusinessApplyTableModel(this);
         tbBusinessApply.setModel(businessApplyTM);
         tbBusinessApply.getColumnModel().getColumn(6).setCellEditor(new ButtonEditor(this, communicationServer));
         tbBusinessApply.getColumnModel().getColumn(6).setCellRenderer(new ButtonRenderer());
         tbBusinessApply.getColumnModel().getColumn(7).setCellEditor(new ButtonEditor(this, communicationServer));
         tbBusinessApply.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
 
-        businessRunningTM = new BusinessRunningTableModel();
+        businessRunningTM = new BusinessRunningTableModel(this);
         tbBusinessRunning.setModel(businessRunningTM);
         tbBusinessRunning.getColumnModel().getColumn(7).setCellEditor(new ButtonEditor(this, communicationServer));
         tbBusinessRunning.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
         tbBusinessRunning.getColumnModel().getColumn(8).setCellEditor(new ButtonEditor(this, communicationServer));
         tbBusinessRunning.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
 
-
-        conf = new Configuarator();
         addLabels();
+    }
+
+    private void loadConf() {
+        conf = new Configuarator();
+        constant = new Constants();
+        constant.setSiteNum(Integer.parseInt(conf.getSiteNum()));
+        constant.setLoginPort(Integer.parseInt(conf.getLoginPort()));
+        constant.setMessagePort(Integer.parseInt(conf.getMessagePort()));
+        constant.setPrivileges(conf.getPrivileges());
+        constant.setBizBoardPort(Integer.parseInt(conf.getBusinessBoardPort()));
+        constant.setBizBoardIP(conf.getBusinessBoardIP());
+        constant.setRemoteIP(conf.getRemoteIP());
+        constant.setRemotePort(Integer.parseInt(conf.getRemotePort()));
     }
 
     private void addLabels() {
         int siteNum = Integer.parseInt(conf.getSiteNum());
         for (int i = 0; i < siteNum; i++) {
-            JLabel lb = new JLabel(""+(i+1));
+            JLabel lb = new JLabel("" + (i + 1));
             lb.setHorizontalAlignment(SwingConstants.CENTER);
             lb.setBackground(Color.red);
             lb.setOpaque(true);
@@ -249,6 +264,10 @@ public class ContentPanel extends javax.swing.JPanel {
     private javax.swing.JTable tbBusinessApply;
     private javax.swing.JTable tbBusinessRunning;
     // End of variables declaration//GEN-END:variables
+
+    public Constants getConstants() {
+        return this.constant;
+    }
 
     public ArrayList<JLabel> getSiteLabels() {
         return this.siteLabels;

@@ -16,6 +16,7 @@ public class Site {
     private String id;
     private int port;
     private InetAddress addr;
+    private int snr;
     private long lastTime;
     private boolean isConnected = false;
     
@@ -24,6 +25,14 @@ public class Site {
         this.port = port;
         this.addr = addr;
         this.lastTime = new Date().getTime();
+    }
+
+    public int getSnr() {
+        return snr;
+    }
+
+    public void setSnr(int snr) {
+        this.snr = snr;
     }
     
     public String getId(){

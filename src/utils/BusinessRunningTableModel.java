@@ -8,27 +8,33 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 import javax.swing.table.AbstractTableModel;
+import satellite.ContentPanel;
 
 /**
  *
  * @author shuai
  */
 public class BusinessRunningTableModel extends AbstractTableModel {
-
+    ContentPanel contentPanel;
     private ArrayList<Object[]> data;
-    private String[] columnNames = {"序号", "主叫站号", "被叫站号", "申请业务状态", "主叫优先级", "所需信道资源", "业务效率", "警告", "强制拆链"};
+    private String[] columnNames = {"序号", "主叫站号", "被叫站号", "申请业务状态","所需信道资源",  "主叫优先级", "业务效率" ,"警告", "强制拆链"};
 
     private void loadTestData() {
-        data.add(new Object[]{"1", "1", "2", "s", "d", "f", "5", "警告", "强制拆链", "001"});
-        data.add(new Object[]{"2", "1", "2", "s", "d", "f", "5", "警告", "强制拆链", "2"});
-        data.add(new Object[]{"3", "1", "2", "s", "d", "f", "5", "警告", "强制拆链", "3"});
-        data.add(new Object[]{"4", "1", "2", "s", "d", "f", "5", "警告", "强制拆链", "4"});
+        data.add(new Object[]{"1", "1", "2", "s", "d", "f", "100%" ,"警告", "强制拆链", "001"});
+        data.add(new Object[]{"2", "1", "2", "s", "d", "f", "100%" , "警告", "强制拆链", "2"});
+        data.add(new Object[]{"3", "1", "2", "s", "d", "f", "100%" , "警告", "强制拆链", "3"});
+        data.add(new Object[]{"4", "1", "2", "s", "d", "f", "100%" ,"警告", "强制拆链", "4"});
     }
 
     public BusinessRunningTableModel() {
         data = new ArrayList<Object[]>();
 //        loadTestData();
 //        System.out.println(getValueAt(0, columnNames.length));
+    }
+    
+    public BusinessRunningTableModel(ContentPanel cntPanel){
+        contentPanel = cntPanel;
+        data = new ArrayList<Object[]>();
     }
 
     @Override
@@ -73,13 +79,14 @@ public class BusinessRunningTableModel extends AbstractTableModel {
     public void addRecord(Object[] obs) {
         ArrayList<Object> temp = new ArrayList<Object>();
         for (int i = 0; i < obs.length - 3; ++i) {
+//            System.out.println(obs[i]);
             temp.add(obs[i]);
         }
         Random rdm = new Random();
-        temp.add(50 + rdm.nextInt(50) + "%");
+        temp.add(50 + rdm.nextInt(50) + "%");//业务效率
         temp.add("警告");
         temp.add("强制拆链");
-        temp.add(obs[obs.length - 1]);
+        temp.add(obs[obs.length - 1]);//站点请求序号
         data.add(temp.toArray());
         this.fireTableDataChanged();
     }

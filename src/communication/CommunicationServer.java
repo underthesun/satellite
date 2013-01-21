@@ -4,7 +4,6 @@
  */
 package communication;
 
-import utils.Site;
 import java.awt.Color;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import satellite.ContentPanel;
+import utils.Site;
 import utils.SiteUpdate;
 
 ;
@@ -23,11 +23,12 @@ import utils.SiteUpdate;
  *
  * @author shuai
  */
-public class CommunicationServer {
+public class CommunicationServer{
 
     private ContentPanel contentPanel;
-    private int portLogin = 6666;
-    private int portMessage = 6667;
+    private int port;
+    private int portLogin;
+    private int portMessage;
     private ArrayList<Site> sites;
     private LoginServer loginServer;
     private MessageServer messageServer;
@@ -35,7 +36,10 @@ public class CommunicationServer {
 
     public CommunicationServer(ContentPanel contentPanel) {
         this.contentPanel = contentPanel;
+
         this.sites = new ArrayList<Site>();
+        portLogin = contentPanel.getConstants().getLoginPort();
+        portMessage = contentPanel.getConstants().getMessagePort();
         this.loginServer = new LoginServer(this, portLogin);
         this.messageServer = new MessageServer(this, portMessage);
         new Thread(loginServer).start();
@@ -43,6 +47,10 @@ public class CommunicationServer {
 
         siteUpdate = new SiteUpdate(this);
         new Timer().schedule(siteUpdate, 0, 1000);
+    }
+    
+    private void loadConstants(){
+        
     }
 
     public JPanel getContentPanel() {
@@ -84,17 +92,7 @@ public class CommunicationServer {
             contentPanel.getSiteConnectedPanel().remove(checkBoxes.get(siteIndex));
             contentPanel.repaint();
             contentPanel.getSiteConnectedPanel().revalidate();
-
             checkBoxes.remove(siteIndex);
-//            Object[] options = {"确定"};
-//            JOptionPane jp = new JOptionPane("站点(" + id + ")掉线", JOptionPane.WARNING_MESSAGE, null, options );
-//            JDialog jd = jp.createDialog(contentPanel, id);
-//            jd.setModal(false);
-//            jd.setVisible(true);
-
-//            JOptionPane.showMessageDialog(contentPanel, "站点(" + id + ")掉线");
-//            JOptionPane will block the whole process
-//            JOptionPane.showMessageDialog(contentPanel, "站点(" + id + ")掉线", "掉线通知", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -141,6 +139,7 @@ public class CommunicationServer {
             Site site = findSite(id);
             if (site == null) {
                 Site s = new Site(id, addr, port);
+                s.setSnr(0);//设置信噪比
                 sites.add(s);
                 setSiteColor(s, Color.green);
                 addSiteCheckBox(s);
@@ -159,6 +158,7 @@ public class CommunicationServer {
             } else {
                 Site s = new Site(id, addr, port);
                 sites.add(s);
+                s.setSnr(0);//设置信噪比
                 setSiteColor(s, Color.green);
                 addSiteCheckBox(s);
             }
@@ -180,6 +180,8 @@ public class CommunicationServer {
         } else if (command.equals("request")) {
             String[] items = str.split(":");
             contentPanel.getApplyModel().addRecord(items);
+        }else if(command.equals("snr")){
+            //信噪比
         }
     }
 
@@ -201,19 +203,24 @@ public class CommunicationServer {
         }
     }
 
-    public void sendBusinessMessage(int rowIndex, int type) {
+    public void sendBusinessMessage(int rowIndex, int type, String conf) {
         String id = null;
         String requestId = null;
+        String bm = "";
         if (type == 0 || type == 1) {
             id = contentPanel.getApplyModel().getValueAt(rowIndex, 1).toString();
             requestId = contentPanel.getApplyModel().getValueAt(rowIndex, 8).toString();
+            if (type == 0) {
+                bm = "request:" + id + ":" + type + ":" + requestId + ":" + conf;
+            } else {
+                bm = "request:" + id + ":" + type + ":" + requestId;
+            }
         }
         if (type == 2 || type == 3) {
             id = contentPanel.getRunningModel().getValueAt(rowIndex, 1).toString();
             requestId = contentPanel.getRunningModel().getValueAt(rowIndex, 9).toString();
+            bm = "request:" + id + ":" + type + ":" + requestId;
         }
-
-        String bm = "request:" + type + ":" + requestId;
         Site site = findSite(id);
         if (site != null) {
             messageServer.sendMessage(site.getAddr(), site.getPort(), bm);
@@ -226,6 +233,6 @@ public class CommunicationServer {
         contentPanel.getRunningModel().removeRecord(id);
         setSiteColor(site, Color.red);
         removeSiteCheckBox(site);
-        removeSite(site);        
+        removeSite(site);
     }
 }
