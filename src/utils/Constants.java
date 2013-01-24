@@ -11,16 +11,20 @@ import java.util.HashMap;
  * @author shuai
  */
 public class Constants {
+
     private int siteNum;
     private HashMap<String, Integer> privileges;
+    private HashMap<String, Integer> snrs;
     private int loginPort;
     private int messagePort;
     private String bizBoardIP;
     private int bizBoardPort;
     private String remoteIP;
     private int remotePort;
-    
     private int localPort;
+
+    public Constants() {
+    }
 
     public int getSiteNum() {
         return siteNum;
@@ -29,8 +33,6 @@ public class Constants {
     public void setSiteNum(int siteNum) {
         this.siteNum = siteNum;
     }
-    
-    public Constants(){}
 
     public HashMap<String, Integer> getPrivileges() {
         return privileges;
@@ -94,6 +96,14 @@ public class Constants {
 
     public void setRemotePort(int remotePort) {
         this.remotePort = remotePort;
+    }
+
+    public HashMap<String, Integer> getSnrs() {
+        return snrs;
+    }
+
+    public void setSnrs(HashMap<String, Integer> snrs) {
+        this.snrs = snrs;
     }
     
 }

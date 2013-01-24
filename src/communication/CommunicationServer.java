@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,9 +41,10 @@ public class CommunicationServer {
     private SiteUpdate siteUpdate;
     private int localPort;
     private int remotePort;
-    private int bizBoardPort;
     private String remoteIP;
+    private int bizBoardPort;
     private String bizBoardIP;
+    private HashMap<String, Integer> snrs;
     private DatagramSocket socket = null;
     private Constants constants;
     private MessageServer messageServer;
@@ -79,6 +81,7 @@ public class CommunicationServer {
         remoteIP = constants.getRemoteIP();
         bizBoardIP = constants.getBizBoardIP();
         bizBoardPort = constants.getBizBoardPort();
+        snrs = constants.getSnrs();
     }
 
     public JPanel getContentPanel() {
@@ -184,6 +187,7 @@ public class CommunicationServer {
             } else {
                 site.setLastTime(new Date().getTime());
             }
+//            System.out.println("addr:"+addr + " prot: " + port);
             loginConfirm(addr, port);
         } else if (command.equals("keep")) {
             String str = data.substring(indexOfColon + 1);
@@ -216,12 +220,29 @@ public class CommunicationServer {
             String message = str.substring(indexOfColon + 1);
             contentPanel.getMessageRecordTextArea().append("[站点" + id + "]: " + message + "\n");
         } else if (command.equals("request")) {
-            System.out.println("request:"+data);
+//            System.out.println("request:"+data);
             String[] items = str.split(":");
             contentPanel.getApplyModel().addRecord(items);
         } else if (command.equals("snr")) {
             //信噪比
+            String s = str.substring(indexOfColon + 1);
+            String[] ss = s.split(":");
+            if (ss[0].equals("1")) {//查询
+                String idToQuery = ss[1];
+                Site site = findSite(id);
+                Integer snr = snrs.get(idToQuery);                
+//                System.out.println(data);
+                echoSNR(site.getAddr(), site.getPort(), id, idToQuery, snr);
+            } else if (ss[0].equals("0")) {//上报
+                String snr = ss[1];
+                snrs.put(id, new Integer(snr));
+            }
         }
+    }
+
+    public void echoSNR(InetAddress addr, int port, String id, String idToQuery, Integer snr) {
+        String snrEcho = "snr:" + id + ":" + idToQuery + ":" + snr.toString();
+        messageServer.sendMessage(addr, port, snrEcho);
     }
 
     public void loginConfirm(InetAddress addr, int port) {

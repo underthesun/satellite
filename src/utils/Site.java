@@ -19,6 +19,7 @@ public class Site {
     private int snr;
     private long lastTime;
     private boolean isConnected = false;
+    private boolean isBusy = false;
     
     public Site(String id, InetAddress addr, int port){
         this.id = id;
@@ -46,15 +47,16 @@ public class Site {
     public int getPort(){
         return port;
     }
-    
-    public void setState(boolean isConnected){
+
+    public boolean isIsConnected() {
+        return isConnected;
+    }
+
+    public void setIsConnected(boolean isConnected) {
         this.isConnected = isConnected;
     }
     
-    public boolean getState(){
-        return isConnected;
-    }
-    
+
     public long getLastTime(){
         return lastTime;
     }
@@ -66,4 +68,13 @@ public class Site {
     public String toString(){
         return "Site:"+id;
     }
+
+    public boolean isIsBusy() {
+        return isBusy;
+    }
+
+    public void setIsBusy(boolean isBusy) {
+        this.isBusy = isBusy;
+    }
+    
 }

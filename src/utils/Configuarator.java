@@ -6,7 +6,6 @@ package utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +37,7 @@ public class Configuarator {
         }
         try {
             doc = docBuilder.parse(new File("src/utils/config.xml"));
-//            doc = docBuilder.parse(new File("conf/test.xml"));
+//            doc = docBuilder.parse(new File("conf/config.xml"));
         } catch (SAXException ex) {
             Logger.getLogger(Configuarator.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -66,7 +65,7 @@ public class Configuarator {
         return nl.item(0).getFirstChild().getNodeValue();
 
     }
-
+    
 //    public String getLoginPort() {
 //        NodeList nl = doc.getElementsByTagName("loginPort");
 //        return nl.item(0).getFirstChild().getNodeValue();

@@ -8,6 +8,7 @@ import communication.CommunicationServer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -76,6 +77,13 @@ public class ContentPanel extends javax.swing.JPanel {
         constant.setRemoteIP(conf.getRemoteIP());
         constant.setRemotePort(Integer.parseInt(conf.getRemotePort()));
         constant.setLocalPort(Integer.parseInt(conf.getLocalPort()));
+        
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        for(int i=0; i<constant.getSiteNum();i++){
+            map.put(""+(i+1), 0);
+        }
+        constant.setSnrs(map);
+        
     }
 
     private void addLabels() {
