@@ -50,8 +50,8 @@
         <p>12</p>
     </site>      
     <localPort>6666</localPort> 
-    <businessBoardIP>127.0.0.01</businessBoardIP><!--业务板卡IP-->
+    <businessBoardIP>127.0.0.1</businessBoardIP><!--业务板卡IP-->
     <businessBoardPort>7777</businessBoardPort><!--业务板卡端口-->
-    <remoteIP>192.168.1.195</remoteIP><!--远端IP-->
+    <remoteIP>127.0.0.1</remoteIP><!--远端IP-->
     <remotePort>6668</remotePort><!--远端端口-->
 </root>
