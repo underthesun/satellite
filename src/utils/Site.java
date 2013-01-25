@@ -18,8 +18,8 @@ public class Site {
     private InetAddress addr;
     private int snr;
     private long lastTime;
-    private boolean isConnected = false;
-    private boolean isBusy = false;
+//    private boolean isConnected = false;
+    private boolean isAvailable = false;
     
     public Site(String id, InetAddress addr, int port){
         this.id = id;
@@ -48,13 +48,13 @@ public class Site {
         return port;
     }
 
-    public boolean isIsConnected() {
-        return isConnected;
-    }
-
-    public void setIsConnected(boolean isConnected) {
-        this.isConnected = isConnected;
-    }
+//    public boolean isIsConnected() {
+//        return isConnected;
+//    }
+//
+//    public void setIsConnected(boolean isConnected) {
+//        this.isConnected = isConnected;
+//    }
     
 
     public long getLastTime(){
@@ -69,12 +69,12 @@ public class Site {
         return "Site:"+id;
     }
 
-    public boolean isIsBusy() {
-        return isBusy;
+    public boolean getIsAvailable() {
+        return isAvailable;
     }
 
-    public void setIsBusy(boolean isBusy) {
-        this.isBusy = isBusy;
+    public void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
     
 }

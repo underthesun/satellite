@@ -34,9 +34,6 @@ public class SiteUpdate extends TimerTask {
                 Site site = sites.get(i);
                 if ((t - site.getLastTime()) / 1000 > 3) {
                     communicationServer.siteOffLine(site);
-//                    communicationServer.setSiteColor(site, Color.red);
-//                    communicationServer.removeSiteCheckBox(site);
-//                    communicationServer.removeSite(site);
                 }
             }
         }

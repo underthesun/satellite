@@ -83,7 +83,7 @@ public class BusinessApplyTableModel extends AbstractTableModel {
     public int addRecord(Object[] obs) {
         ArrayList<Object> temp = new ArrayList<Object>();
         temp.add(++sequenceNumber);
-        for (int i = 0; i < obs.length - 2; ++i) {
+        for (int i = 0; i < 3; ++i) {
 //            System.out.println(obs[i].toString());
             temp.add(obs[i]);
         }

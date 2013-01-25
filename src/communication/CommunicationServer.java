@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import satellite.ContentPanel;
 import utils.Constants;
@@ -184,6 +185,7 @@ public class CommunicationServer {
                 sites.add(s);
                 setSiteColor(s, Color.green);
                 addSiteCheckBox(s);
+                s.setIsAvailable(true);
             } else {
                 site.setLastTime(new Date().getTime());
             }
@@ -203,6 +205,7 @@ public class CommunicationServer {
                 s.setSnr(0);//设置信噪比
                 setSiteColor(s, Color.green);
                 addSiteCheckBox(s);
+                s.setIsAvailable(true);
             }
             keepConfirm(addr, port, count);
         }
@@ -222,7 +225,23 @@ public class CommunicationServer {
         } else if (command.equals("request")) {
 //            System.out.println("request:"+data);
             String[] items = str.split(":");
-            contentPanel.getApplyModel().addRecord(items);
+            String idCalling = items[0];
+            String idCalled = items[2];
+            String type = items[1];
+            if (type.equals("0")) {//request business
+                String serial = items[9];
+                if (findSite(idCalling).getIsAvailable() && findSite(idCalled).getIsAvailable()) {
+                    Site s = findSite(idCalled);
+                    messageServer.sendMessage(s.getAddr(), s.getPort(), data);
+                    contentPanel.getApplyModel().addRecord(items);
+                } else {
+                    sendRefuseMessage(id, 4, serial);
+                }
+            } else if (type.equals("1")) {//request cancel
+                if(JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(contentPanel, "站点"+idCalled+"申请取消业务")){
+                    sendCancelPermission(idCalling, idCalled);                    
+                }
+            }
         } else if (command.equals("snr")) {
             //信噪比
             String s = str.substring(indexOfColon + 1);
@@ -230,7 +249,7 @@ public class CommunicationServer {
             if (ss[0].equals("1")) {//查询
                 String idToQuery = ss[1];
                 Site site = findSite(id);
-                Integer snr = snrs.get(idToQuery);                
+                Integer snr = snrs.get(idToQuery);
 //                System.out.println(data);
                 echoSNR(site.getAddr(), site.getPort(), id, idToQuery, snr);
             } else if (ss[0].equals("0")) {//上报
@@ -248,30 +267,12 @@ public class CommunicationServer {
     public void loginConfirm(InetAddress addr, int port) {
         String confirmMessage = "connect:ok";
         messageServer.sendMessage(addr, port, confirmMessage);
-//        sendBuffer = confirmMessage.getBytes();
-//        try {
-//            sendPacket.setAddress(addr);
-//            sendPacket.setPort(port);
-//            sendPacket.setData(sendBuffer, 0, sendBuffer.length);
-//            clientSocket.send(sendPacket);
-//        } catch (IOException ex) {
-//            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     public void keepConfirm(InetAddress addr, int port, String count) {
         int c = Integer.parseInt(count) + 1;
         String confirmMessage = "keep:" + c;
         messageServer.sendMessage(addr, port, confirmMessage);
-//        sendBuffer = confirmMessage.getBytes();
-//        try {
-//            sendPacket.setAddress(addr);
-//            sendPacket.setPort(port);
-//            sendPacket.setData(sendBuffer, 0, sendBuffer.length);
-//            clientSocket.send(sendPacket);
-//        } catch (IOException ex) {
-//            Logger.getLogger(LoginServer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     public void sendMessage(String message) {
@@ -292,12 +293,38 @@ public class CommunicationServer {
         }
     }
 
+    public void sendRefuseMessage(String id, int type, String serial) {
+        String rm = "";
+        if (type == 4) {
+            rm += "request" + ":" + id + ":" + type + ":" + serial;
+        }
+        Site site = findSite(id);
+        if (site != null) {
+            messageServer.sendMessage(site.getAddr(), site.getPort(), rm);
+        }
+    }
+
+    public void sendCancelPermission(String idCalling, String idCalled){
+        String cp = "request:"+idCalling+":6";
+        Site site = findSite(idCalling);
+        if (site != null) {
+            messageServer.sendMessage(site.getAddr(), site.getPort(), cp);
+        }
+        cp = "request:"+idCalled+":6";
+        site = findSite(idCalled);
+        if (site != null) {
+            messageServer.sendMessage(site.getAddr(), site.getPort(), cp);
+        }
+    }
+    
     public void sendBusinessMessage(int rowIndex, int type, String conf) {
         String id = null;
+        String idCalled = null;
         String requestId = null;
         String bm = "";
         if (type == 0 || type == 1) {
             id = contentPanel.getApplyModel().getValueAt(rowIndex, 1).toString();
+            idCalled = contentPanel.getApplyModel().getValueAt(rowIndex, 2).toString();
             requestId = contentPanel.getApplyModel().getValueAt(rowIndex, 8).toString();
             if (type == 0) {
                 bm = "request:" + id + ":" + type + ":" + requestId + ":" + conf;
@@ -307,6 +334,7 @@ public class CommunicationServer {
         }
         if (type == 2 || type == 3) {
             id = contentPanel.getRunningModel().getValueAt(rowIndex, 1).toString();
+            idCalled = contentPanel.getApplyModel().getValueAt(rowIndex, 2).toString();
             requestId = contentPanel.getRunningModel().getValueAt(rowIndex, 9).toString();
             bm = "request:" + id + ":" + type + ":" + requestId;
         }
@@ -314,9 +342,14 @@ public class CommunicationServer {
         if (site != null) {
             messageServer.sendMessage(site.getAddr(), site.getPort(), bm);
         }
+        site = findSite(idCalled);
+        if (site != null) {
+            messageServer.sendMessage(site.getAddr(), site.getPort(), bm);
+        }
     }
 
     public void siteOffLine(Site site) {
+        site.setIsAvailable(false);
         String id = site.getId();
         contentPanel.getApplyModel().removeRecord(id);
         contentPanel.getRunningModel().removeRecord(id);
