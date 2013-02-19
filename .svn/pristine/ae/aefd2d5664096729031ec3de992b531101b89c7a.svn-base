@@ -1,0 +1,5 @@
+0000000000000000000000000000000000000000 055daa8942fa3590215df5b1b3bbf4d3fadf68e1 underthesun <254440910@qq.com> 1358758075 +0800	branch: Created from branch refs/heads/master
+055daa8942fa3590215df5b1b3bbf4d3fadf68e1 06e2e787cee880dc748e1d2a08da812eaa55c2c0 underthesun <254440910@qq.com> 1358773436 +0800	commit: changed to one-port way
+06e2e787cee880dc748e1d2a08da812eaa55c2c0 953e750000a678226b668dcc28689d0f0f751834 underthesun <254440910@qq.com> 1359025602 +0800	commit: changed to one-port way
+953e750000a678226b668dcc28689d0f0f751834 d825b4a041d6b1f3642ad8ebb8c7c2948bd4228a underthesun <254440910@qq.com> 1359082338 +0800	commit: use stream method to handle network IO, to solve the Chinese encoding problem
+d825b4a041d6b1f3642ad8ebb8c7c2948bd4228a c322e7647336f0c726d5b9657c2cb0d8ad0d6031 underthesun <254440910@qq.com> 1359096905 +0800	commit: 1. add isAvailable to Site 2. BusinessApplyTableModel need completement

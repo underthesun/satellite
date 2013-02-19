@@ -1,0 +1,11 @@
+0000000000000000000000000000000000000000 9ddeed35470cbed1b57ae9555aa0583bc85bff03 ws <shuai@work-pc> 1353328007 +0800	commit: 
+9ddeed35470cbed1b57ae9555aa0583bc85bff03 c14918ee87d75a136ce8d882b353b39c72ab152f shuai <shuai@work-pc> 1356176251 +0800	commit: finished
+c14918ee87d75a136ce8d882b353b39c72ab152f b32ab367093af3b710595c015364808d4e88a49f shuai <shuai@work-pc> 1357474548 +0800	commit: xml configuration file added test.xml and Configuration.java
+b32ab367093af3b710595c015364808d4e88a49f 055daa8942fa3590215df5b1b3bbf4d3fadf68e1 underthesun <254440910@qq.com> 1358756653 +0800	commit: F7... added, but the server need to be changed to listen only one port
+055daa8942fa3590215df5b1b3bbf4d3fadf68e1 055daa8942fa3590215df5b1b3bbf4d3fadf68e1 underthesun <254440910@qq.com> 1358758686 +0800	checkout: moving from master to onePort
+055daa8942fa3590215df5b1b3bbf4d3fadf68e1 06e2e787cee880dc748e1d2a08da812eaa55c2c0 underthesun <254440910@qq.com> 1358773436 +0800	commit: changed to one-port way
+06e2e787cee880dc748e1d2a08da812eaa55c2c0 055daa8942fa3590215df5b1b3bbf4d3fadf68e1 underthesun <254440910@qq.com> 1358773464 +0800	checkout: moving from onePort to master
+055daa8942fa3590215df5b1b3bbf4d3fadf68e1 06e2e787cee880dc748e1d2a08da812eaa55c2c0 underthesun <254440910@qq.com> 1358773513 +0800	checkout: moving from master to onePort
+06e2e787cee880dc748e1d2a08da812eaa55c2c0 953e750000a678226b668dcc28689d0f0f751834 underthesun <254440910@qq.com> 1359025602 +0800	commit: changed to one-port way
+953e750000a678226b668dcc28689d0f0f751834 d825b4a041d6b1f3642ad8ebb8c7c2948bd4228a underthesun <254440910@qq.com> 1359082338 +0800	commit: use stream method to handle network IO, to solve the Chinese encoding problem
+d825b4a041d6b1f3642ad8ebb8c7c2948bd4228a c322e7647336f0c726d5b9657c2cb0d8ad0d6031 underthesun <254440910@qq.com> 1359096905 +0800	commit: 1. add isAvailable to Site 2. BusinessApplyTableModel need completement
