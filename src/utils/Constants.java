@@ -14,7 +14,7 @@ public class Constants {
 
     private int siteNum;
     private HashMap<String, Integer> privileges;
-    private HashMap<String, Integer> snrs;
+    private HashMap<String, String> snrs;
     private int loginPort;
     private int messagePort;
     private String bizBoardIP;
@@ -98,11 +98,11 @@ public class Constants {
         this.remotePort = remotePort;
     }
 
-    public HashMap<String, Integer> getSnrs() {
+    public HashMap<String, String> getSnrs() {
         return snrs;
     }
 
-    public void setSnrs(HashMap<String, Integer> snrs) {
+    public void setSnrs(HashMap<String, String> snrs) {
         this.snrs = snrs;
     }
     

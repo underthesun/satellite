@@ -36,8 +36,11 @@ public class Configuarator {
             Logger.getLogger(Configuarator.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-//            doc = docBuilder.parse(new File("src/utils/config.xml"));
-            doc = docBuilder.parse(new File("conf/config.xml"));
+            File conf = new File("conf/config.xml");
+            if (!conf.exists()) {
+                conf = new File("src/utils/config.xml");
+            }
+            doc = docBuilder.parse(conf);
         } catch (SAXException ex) {
             Logger.getLogger(Configuarator.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -65,17 +68,15 @@ public class Configuarator {
         return nl.item(0).getFirstChild().getNodeValue();
 
     }
-    
+
 //    public String getLoginPort() {
 //        NodeList nl = doc.getElementsByTagName("loginPort");
 //        return nl.item(0).getFirstChild().getNodeValue();
 //    }
-
 //    public String getMessagePort() {
 //        NodeList nl = doc.getElementsByTagName("messagePort");
 //        return nl.item(0).getFirstChild().getNodeValue();
 //    }
-
     public String getBusinessBoardIP() {
         NodeList nl = doc.getElementsByTagName("businessBoardIP");
         return nl.item(0).getFirstChild().getNodeValue();

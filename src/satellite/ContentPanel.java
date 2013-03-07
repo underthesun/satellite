@@ -59,10 +59,10 @@ public class ContentPanel extends javax.swing.JPanel {
 
         businessRunningTM = new BusinessRunningTableModel(this);
         tbBusinessRunning.setModel(businessRunningTM);
-        tbBusinessRunning.getColumnModel().getColumn(7).setCellEditor(new ButtonEditor(this, communicationServer));
-        tbBusinessRunning.getColumnModel().getColumn(7).setCellRenderer(new ButtonRenderer());
-        tbBusinessRunning.getColumnModel().getColumn(8).setCellEditor(new ButtonEditor(this, communicationServer));
-        tbBusinessRunning.getColumnModel().getColumn(8).setCellRenderer(new ButtonRenderer());
+        tbBusinessRunning.getColumnModel().getColumn(9).setCellEditor(new ButtonEditor(this, communicationServer));
+        tbBusinessRunning.getColumnModel().getColumn(9).setCellRenderer(new ButtonRenderer());
+        tbBusinessRunning.getColumnModel().getColumn(10).setCellEditor(new ButtonEditor(this, communicationServer));
+        tbBusinessRunning.getColumnModel().getColumn(10).setCellRenderer(new ButtonRenderer());
 
         addLabels();
     }
@@ -80,9 +80,9 @@ public class ContentPanel extends javax.swing.JPanel {
         constant.setRemotePort(Integer.parseInt(conf.getRemotePort()));
         constant.setLocalPort(Integer.parseInt(conf.getLocalPort()));
 
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        HashMap<String, String> map = new HashMap<String, String>();
         for (int i = 0; i < constant.getSiteNum(); i++) {
-            map.put("" + (i + 1), 0);
+            map.put("" + (i + 1), "");
         }
         constant.setSnrs(map);
 
@@ -316,6 +316,10 @@ public class ContentPanel extends javax.swing.JPanel {
         return businessRunningTM;
     }
 
+    public void updateSnr(String id, String snr){
+        businessRunningTM.updateSnr(id, snr);
+    }
+    
 //    public void bizCancelling(String idCalling) {
 //        final String id = idCalling;
 //        SwingUtilities.invokeLater(new Runnable() {

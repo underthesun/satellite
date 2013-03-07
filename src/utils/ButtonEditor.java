@@ -77,10 +77,8 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor,
                         System.out.println("Fucking canceled");
                     }
                     if (input.toString().equals("")) {
-//                    System.out.println("NULL: Fuck");
                         JOptionPane.showConfirmDialog(contentPanel, "请正确输入频点", "提醒", JOptionPane.OK_CANCEL_OPTION);
                     } else {
-//                    System.out.println("input: "+input);
                         rowIndex = contentPanel.getTableApply().getSelectedRow();
                         if (rowIndex != -1) {
                             communicationServer.sendBusinessMessage(rowIndex, 0, input.toString());

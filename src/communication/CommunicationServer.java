@@ -45,7 +45,7 @@ public class CommunicationServer {
     private String remoteIP;
     private int bizBoardPort;
     private String bizBoardIP;
-    private HashMap<String, Integer> snrs;
+    private HashMap<String, String> snrs;
     private DatagramSocket socket = null;
     private Constants constants;
     private MessageServer messageServer;
@@ -260,23 +260,25 @@ public class CommunicationServer {
             }
         } else if (command.equals("snr")) {
             //信噪比
-            String s = str.substring(indexOfColon + 1);
-            String[] ss = s.split(":");
-            if (ss[0].equals("1")) {//查询
-                String idToQuery = ss[1];
+            String[] ss = str.split(":");
+            if (ss[1].equals("1")) {//查询
+                String idQueryed = ss[2];
                 Site site = findSite(id);
-                Integer snr = snrs.get(idToQuery);
-//                System.out.println(data);
-                echoSNR(site.getAddr(), site.getPort(), id, idToQuery, snr);
-            } else if (ss[0].equals("0")) {//上报
-                String snr = ss[1];
-                snrs.put(id, new Integer(snr));
+                String snr = snrs.get(idQueryed);
+                if (!snr.equals("")) {
+                    System.out.println("snr: " + snr);
+                    echoSNR(site.getAddr(), site.getPort(), id, idQueryed, snr);
+                }
+            } else if (ss[1].equals("0")) {//上报
+                String snr = ss[2];
+                snrs.put(id, snr);
+                contentPanel.updateSnr(id, snr);
             }
         }
     }
 
-    public void echoSNR(InetAddress addr, int port, String id, String idToQuery, Integer snr) {
-        String snrEcho = "snr:" + id + ":" + idToQuery + ":" + snr.toString();
+    public void echoSNR(InetAddress addr, int port, String id, String idQueryed, String snr) {
+        String snrEcho = "snr:" + id + ":" + idQueryed + ":" + snr;
         messageServer.sendMessage(addr, port, snrEcho);
     }
 
@@ -346,10 +348,10 @@ public class CommunicationServer {
             //requestId = contentPanel.getApplyModel().getValueAt(rowIndex, 8).toString();
             if (type == 0) {
                 bm = "request:" + id + ":" + type + ":" + conf;
-                bm2 = "request:" + idCalled + ":" + type + ":" + conf;
+                bm2 = "request:" + idCalled + ":" + type + ":" + conf;;
             } else {
-                bm = "request:" + id + ":" + type;
-                bm2 = "request:" + idCalled + ":" + type;
+                bm = "request:" + ":" + id + ":" + type;
+                bm2 = "request:" + ":" + idCalled + ":" + type;;
             }
         }
         if (type == 2 || type == 3) {
