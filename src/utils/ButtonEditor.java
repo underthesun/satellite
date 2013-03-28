@@ -71,23 +71,27 @@ public class ButtonEditor extends AbstractCellEditor implements TableCellEditor,
 //                        contentPanel.getRunningModel().addRecord(obs);
 //                    }
 //                }
-                try {
-                    Object input = JOptionPane.showInputDialog(contentPanel, "输入频点", "批准", JOptionPane.QUESTION_MESSAGE);
-                    if (input == null) {//Canceled
-                        System.out.println("Fucking canceled");
-                    }
-                    if (input.toString().equals("")) {
-                        JOptionPane.showConfirmDialog(contentPanel, "请正确输入频点", "提醒", JOptionPane.OK_CANCEL_OPTION);
-                    } else {
-                        rowIndex = contentPanel.getTableApply().getSelectedRow();
-                        if (rowIndex != -1) {
-                            communicationServer.sendBusinessMessage(rowIndex, 0, input.toString());
-                            Object[] obs = contentPanel.getApplyModel().getRecord(rowIndex);
-                            contentPanel.getApplyModel().removeRecord(rowIndex);
-                            contentPanel.getRunningModel().addRecord(obs);
+
+                Object input = JOptionPane.showInputDialog(contentPanel, "请正确输入频点(950000000-1750000000)", "批准", JOptionPane.QUESTION_MESSAGE);
+                if (input == null) {//Canceled
+                    System.out.println("Fucking canceled");
+                } else {
+                    try {
+                        int fp = Integer.parseInt(input.toString());
+                        if (950000000 <= fp && fp <= 1750000000) {
+                            rowIndex = contentPanel.getTableApply().getSelectedRow();
+                            if (rowIndex != -1) {
+                                communicationServer.sendBusinessMessage(rowIndex, 0, fp + "");
+                                Object[] obs = contentPanel.getApplyModel().getRecord(rowIndex);
+                                contentPanel.getApplyModel().removeRecord(rowIndex);
+                                contentPanel.getRunningModel().addRecord(obs);
+                            }
+                        } else {
+                            JOptionPane.showConfirmDialog(contentPanel, "请正确输入频点(950000000-1750000000)", "提醒", JOptionPane.OK_CANCEL_OPTION);
                         }
+                    } catch (Exception ex) {
+                        JOptionPane.showConfirmDialog(contentPanel, "请正确输入频点(950000000-1750000000)", "提醒", JOptionPane.OK_CANCEL_OPTION);
                     }
-                } catch (Exception ee) {
                 }
             } else if (state.toString().equals(state_reject)) {
                 if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null, "确定拒绝?", "确认", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1])) {

@@ -117,7 +117,7 @@ public class BusinessRunningTableModel extends AbstractTableModel {
         Iterator<Object[]> it = data.iterator();
         while (it.hasNext()) {
             Object[] obs = it.next();
-            if (obs[1].equals(id)) {
+            if (obs[1].equals(id) ||obs[2].equals(id)) {
                 it.remove();
             }
         }

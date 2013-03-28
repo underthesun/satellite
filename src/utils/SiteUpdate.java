@@ -32,7 +32,7 @@ public class SiteUpdate extends TimerTask {
             long t = new Date().getTime();
             for (int i = 0; i < sites.size(); i++) {
                 Site site = sites.get(i);
-                if ((t - site.getLastTime()) / 1000 > 3) {
+                if ((t - site.getLastTime()) / 1000 > 5) {
                     communicationServer.siteOffLine(site);
                 }
             }
